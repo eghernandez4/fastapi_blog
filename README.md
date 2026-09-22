@@ -1,8 +1,8 @@
 # FastAPI Blog
 
-A full-featured blog web application and RESTful API built with **FastAPI**, **SQLAlchemy 2.0**, **Pydantic v2**, and **Jinja2** templates.
+A full-featured blog web application and RESTful API built with **FastAPI**, **SQLAlchemy 2.0 (Async)**, **aiosqlite**, **Pydantic v2**, and **Jinja2** templates.
 
-This project demonstrates core and advanced FastAPI patterns, including server-side rendered HTML views with Bootstrap 5, dependency injection for database sessions, relational database modeling with cascade operations, dual-mode API/HTML exception handling, and auto-generated interactive OpenAPI documentation.
+This project demonstrates core and advanced FastAPI patterns, including asynchronous database operations with SQLAlchemy's `AsyncSession`, lifespan event management, server-side rendered HTML views with Bootstrap 5, dependency injection for database sessions, relational database modeling with cascade operations, dual-mode API/HTML exception handling, and auto-generated interactive OpenAPI documentation.
 
 ---
 
@@ -24,8 +24,12 @@ This project demonstrates core and advanced FastAPI patterns, including server-s
 
 - **Database & ORM**:
   - Modern **SQLAlchemy 2.0** declarative syntax (`Mapped` and `mapped_column`).
+  - Fully asynchronous database layer using `AsyncSession`, `async_sessionmaker`, and `create_async_engine`.
+  - Non-blocking SQLite access with **aiosqlite** (`sqlite+aiosqlite:///./blog.db`).
+  - FastAPI `lifespan` handler managing asynchronous table creation and engine disposal.
+  - Eager relationship loading with `selectinload` for optimized asynchronous queries.
   - Relational mapping between Users and Posts with cascade deletion.
-  - SQLite backend (`blog.db`) with lightweight dependency-injected session management (`get_db`).
+  - Asynchronous dependency-injected session management (`get_db`).
 
 - **Smart Dual-Mode Exception Handling**:
   - Global Starlette and RequestValidationError handlers dynamically detect request paths:
@@ -44,7 +48,7 @@ This project demonstrates core and advanced FastAPI patterns, including server-s
 | **Language** | Python 3.12+ |
 | **Framework** | [FastAPI](https://fastapi.tiangolo.com/) |
 | **ASGI Server** | [Uvicorn](https://www.uvicorn.org/) |
-| **Database / ORM** | SQLite, [SQLAlchemy 2.0](https://www.sqlalchemy.org/) |
+| **Database / ORM** | SQLite, [SQLAlchemy 2.0](https://www.sqlalchemy.org/) (Async), [aiosqlite](https://github.com/omnilib/aiosqlite) |
 | **Data Validation** | [Pydantic v2](https://docs.pydantic.dev/), `email-validator` |
 | **Templating** | [Jinja2](https://jinja.palletsprojects.com/) |
 | **Frontend Styling** | [Bootstrap 5.3](https://getbootstrap.com/), Google Fonts (Montserrat, Nunito) |
@@ -55,10 +59,10 @@ This project demonstrates core and advanced FastAPI patterns, including server-s
 
 ```text
 fastapi_blog/
-├── database.py         # Database engine, Base declarative model, and get_db session dependency
+├── database.py         # Async database engine (aiosqlite), Base model, and async get_db dependency
 ├── models.py           # SQLAlchemy ORM models (User, Post) and relationships
 ├── schemas.py          # Pydantic schemas for request validation and response serialization
-├── main.py             # FastAPI app initialization, routes, static mounts, and error handlers
+├── main.py             # FastAPI app initialization with lifespan, async routes, static mounts, and error handlers
 ├── blog.db             # SQLite database file (created automatically on startup)
 ├── test_main.http      # HTTP requests for testing endpoints in IDE REST clients
 ├── templates/          # Jinja2 HTML templates
@@ -104,7 +108,7 @@ fastapi_blog/
 
 3. **Install the required packages:**
    ```bash
-   pip install fastapi "uvicorn[standard]" sqlalchemy jinja2 pydantic email-validator
+   pip install fastapi "uvicorn[standard]" sqlalchemy aiosqlite jinja2 pydantic email-validator
    ```
 
 ---
