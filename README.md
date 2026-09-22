@@ -2,7 +2,7 @@
 
 A full-featured blog web application and RESTful API built with **FastAPI**, **SQLAlchemy 2.0 (Async)**, **aiosqlite**, **Pydantic v2**, and **Jinja2** templates.
 
-This project demonstrates core and advanced FastAPI patterns, including asynchronous database operations with SQLAlchemy's `AsyncSession`, lifespan event management, server-side rendered HTML views with Bootstrap 5, dependency injection for database sessions, relational database modeling with cascade operations, dual-mode API/HTML exception handling, and auto-generated interactive OpenAPI documentation.
+This project demonstrates core and advanced FastAPI patterns, including modular routing with `APIRouter`, asynchronous database operations with SQLAlchemy's `AsyncSession`, lifespan event management, server-side rendered HTML views with Bootstrap 5, dependency injection for database sessions, relational database modeling with cascade operations, dual-mode API/HTML exception handling, and auto-generated interactive OpenAPI documentation.
 
 ---
 
@@ -17,6 +17,7 @@ This project demonstrates core and advanced FastAPI patterns, including asynchro
   - Custom HTML error pages for browser clients.
 
 - **RESTful API**:
+  - Modular routing architecture with **`APIRouter`** (`routers/posts.py` and `routers/users.py`) for clean separation of concerns.
   - Full CRUD operations for **Users** and **Posts**.
   - Consistent HTTP status codes (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `403 Forbidden`, `404 Not Found`, `422 Unprocessable Content`).
   - Strict input validation and email format verification via Pydantic v2 and `email-validator`.
@@ -62,7 +63,11 @@ fastapi_blog/
 ├── database.py         # Async database engine (aiosqlite), Base model, and async get_db dependency
 ├── models.py           # SQLAlchemy ORM models (User, Post) and relationships
 ├── schemas.py          # Pydantic schemas for request validation and response serialization
-├── main.py             # FastAPI app initialization with lifespan, async routes, static mounts, and error handlers
+├── routers/            # Modular API route handlers using APIRouter
+│   ├── __init__.py     # Package initialization
+│   ├── posts.py        # Post API endpoints (CRUD operations)
+│   └── users.py        # User API endpoints and author posts
+├── main.py             # FastAPI app initialization with lifespan, template views, router registration, static mounts, and error handlers
 ├── blog.db             # SQLite database file (created automatically on startup)
 ├── test_main.http      # HTTP requests for testing endpoints in IDE REST clients
 ├── templates/          # Jinja2 HTML templates
